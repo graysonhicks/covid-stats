@@ -1,3 +1,4 @@
+import fetch from 'isomorphic-unfetch'
 export const formatDate = (unformattedDate) => {
   const stringDate = unformattedDate.toString()
   const year = stringDate.substring(0, 4)
@@ -7,11 +8,6 @@ export const formatDate = (unformattedDate) => {
   const monthS = date.toLocaleString('default', { month: 'long' })
   let dd = date.getDate()
 
-  let mm = date.getMonth() + 1
-
-  if (mm < 10) {
-    mm = '0' + mm
-  }
   return monthS + ' ' + dd
 }
 

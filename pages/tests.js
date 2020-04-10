@@ -1,5 +1,5 @@
 import { Heading } from '@chakra-ui/core'
-import { Layout } from '../pages/layout'
+import { Layout } from '../components/layout'
 import { Chart, ChartContainer } from '../components/chart'
 import { SubMenu } from '../components/submenu'
 import { getTestData } from '../utils'
