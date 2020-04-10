@@ -1,41 +1,78 @@
-import React from 'react';
-import fetch from 'isomorphic-unfetch';
-import {  BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
-import { ThemeProvider } from "@chakra-ui/core";
-import { Heading } from "@chakra-ui/core";
-import { Box } from "@chakra-ui/core";
+import { Box, Text, Link as ChakraLink, Icon } from '@chakra-ui/core'
+import Link from 'next/link'
+import { FaSkullCrossbones, FaHospital, FaNotesMedical } from 'react-icons/fa'
 
-export default function Index({stats}) {
+const CategoryBox = ({ children }) => (
+  <Box
+    display="flex"
+    rounded="lg"
+    boxShadow="lg"
+    width="sm"
+    height="sm"
+    justifyContent="center"
+    backgroundColor="gray.200"
+    alignItems="center"
+    marginBottom={5}
+  >
+    {children}
+  </Box>
+)
+
+const CategoryLink = ({ children, ...rest }) => {
   return (
-    <ThemeProvider>
-      <Box p={4}>
-        <Heading m={0}>COVID-19 Tracking</Heading>
-        <BarChart width={1200} height={400} data={stats.reverse()}>
-          <Bar type="monotone" dataKey="positive" stroke="#8884d8" />
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-        </BarChart>
-      </Box>
-    </ThemeProvider>
-  );
+    <ChakraLink
+      display="flex"
+      flexDirection="column"
+      fontSize="4xl"
+      fontFamily="heading"
+      color="black"
+      alignItems="center"
+      fontWeight="bold"
+      {...rest}
+    >
+      {children}
+    </ChakraLink>
+  )
 }
 
-Index.getInitialProps = async function() {
-  const res = await fetch('https://covidtracking.com/api/us/daily');
-  const data = await res.json();
+export default function Index() {
+  return (
+    <>
+      <Text display="flex" marginBottom={10}>
+        Click category to see data. All data provided by{' '}
+        <ChakraLink href="https://covidtracking.com/" display="flex" paddingLeft={1} color="purple.600" isExternal>
+          The COVID Tracking Project <Icon name="external-link" marginLeft={1} />
+        </ChakraLink>
+        .
+      </Text>
 
-  return {
-    stats: data.map(entry => {
-      const stringDate = entry.date.toString()
-      const year        = stringDate.substring(0,4);
-      const month       = stringDate.substring(4,6);
-      const day         = stringDate.substring(6,8);
-      const date        = new Date(year, month-1, day);
+      <Box display="flex" flexWrap="wrap" justifyContent="space-around">
+        <CategoryBox>
+          <Link href="/deaths" passHref>
+            <CategoryLink>
+              <Box as={FaSkullCrossbones} />
+              Deaths
+            </CategoryLink>
+          </Link>
+        </CategoryBox>
 
-      entry.formattedDate = date
-
-      return entry;
-    })
-  };
-};
+        <CategoryBox>
+          <Link href="/hospitalizations" passHref>
+            <CategoryLink>
+              <Box as={FaHospital} />
+              Hospitalizations
+            </CategoryLink>
+          </Link>
+        </CategoryBox>
+        <CategoryBox>
+          <Link href="/tests" passHref>
+            <CategoryLink>
+              <Box as={FaNotesMedical} />
+              Tests
+            </CategoryLink>
+          </Link>
+        </CategoryBox>
+      </Box>
+    </>
+  )
+}
